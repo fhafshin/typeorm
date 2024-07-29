@@ -1,10 +1,15 @@
+import { BlogEntity } from 'src/blog/entity/blog.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ProfileEntity } from './profile.entity';
 
 @Entity('User')
 export class UserEntity {
@@ -22,4 +27,18 @@ export class UserEntity {
   created_at: Date;
   @UpdateDateColumn()
   updated_at: Date;
+
+  @Column({ nullable: true })
+  profileId: number;
+
+  @OneToMany(() => BlogEntity, (blog) => blog.user)
+  blogs: BlogEntity[];
+
+  @OneToOne(() => ProfileEntity, (profile) => profile.user, {
+    onDelete: 'SET NULL',
+    nullable: true,
+    eager: true,
+  })
+  @JoinColumn({ name: 'profileId' })
+  profile: ProfileEntity;
 }
